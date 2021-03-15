@@ -28,6 +28,7 @@ func configureFromFlags() config {
 func main() {
 	cfg := configureFromFlags()
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		AssumeRoleDuration:      time.Hour,
 		AssumeRoleTokenProvider: stscreds.StdinTokenProvider,
 		SharedConfigState:       session.SharedConfigEnable,
 		Profile:                 cfg.profile,
