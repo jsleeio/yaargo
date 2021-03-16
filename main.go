@@ -33,10 +33,13 @@ func main() {
 		SharedConfigState:       session.SharedConfigEnable,
 		Profile:                 cfg.profile,
 	}))
-	expiry := time.Now().Add(time.Hour).Unix()
 	creds, err := sess.Config.Credentials.Get()
 	if err != nil {
 		log.Fatalf("Credentials.Get: %v", err)
+	}
+	expiresAt, err := sess.Config.Credentials.ExpiresAt()
+	if err != nil {
+		log.Fatalf("Credentials.ExpiresAt: %v", err)
 	}
 	os.Setenv("AWS_ACCESS_KEY_ID", creds.AccessKeyID)
 	os.Setenv("AWS_SECRET_ACCESS_KEY", creds.SecretAccessKey)
@@ -44,11 +47,11 @@ func main() {
 	if sess.Config.Region != nil {
 		os.Setenv("AWS_REGION", *sess.Config.Region)
 	}
-	os.Setenv("ARG_ROLE_CREDS_EXPIRE_AT", fmt.Sprint(expiry))
+	os.Setenv("ARG_ROLE_CREDS_EXPIRE_AT", fmt.Sprint(expiresAt.Unix()))
 	os.Setenv("ARG_PROFILE", cfg.profile)
 	var cmd *exec.Cmd
 	if cfg.tmux {
-		tmuxsocket := fmt.Sprintf("%s-%d", cfg.profile, expiry)
+		tmuxsocket := fmt.Sprintf("%s-%d", cfg.profile, expiresAt.Unix())
 		// we start with a dedicated socket, unfortunately, because otherwise the
 		// environment variables may cross-pollinate into other tmux sessions via
 		// inheritance from the tmux server :-(
