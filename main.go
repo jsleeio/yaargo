@@ -13,12 +13,14 @@ import (
 )
 
 type config struct {
-	profile string
-	tmux    bool
+	duration time.Duration
+	profile  string
+	tmux     bool
 }
 
 func configureFromFlags() config {
 	c := config{}
+	flag.DurationVar(&c.duration, "duration", time.Hour, "override credential lifetime")
 	flag.StringVar(&c.profile, "profile", "", "AWS profile name (from $HOME/.aws/credentials)")
 	flag.BoolVar(&c.tmux, "tmux", false, "invoke tmux instead of $SHELL")
 	flag.Parse()
@@ -28,7 +30,7 @@ func configureFromFlags() config {
 func main() {
 	cfg := configureFromFlags()
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		AssumeRoleDuration:      time.Hour,
+		AssumeRoleDuration:      cfg.duration,
 		AssumeRoleTokenProvider: stscreds.StdinTokenProvider,
 		SharedConfigState:       session.SharedConfigEnable,
 		Profile:                 cfg.profile,

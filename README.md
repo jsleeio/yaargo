@@ -11,6 +11,8 @@ Yet Another Assume-Role in GOlang
 
 ```
 Usage of ./yaargo:
+  -duration duration
+    	override credential lifetime (default 1h0m0s)
   -profile string
     	AWS profile name (from $HOME/.aws/credentials)
   -tmux
