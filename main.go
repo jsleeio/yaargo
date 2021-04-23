@@ -22,7 +22,7 @@ func configureFromFlags() config {
 	c := config{}
 	flag.DurationVar(&c.duration, "duration", time.Hour, "override credential lifetime")
 	flag.StringVar(&c.profile, "profile", "", "AWS profile name (from $HOME/.aws/credentials)")
-	flag.BoolVar(&c.tmux, "tmux", false, "invoke tmux instead of $SHELL")
+	flag.BoolVar(&c.tmux, "tmux", true, "invoke tmux instead of $SHELL")
 	flag.Parse()
 	return c
 }
